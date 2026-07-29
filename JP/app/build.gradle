@@ -1,0 +1,97 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+}
+
+def localProps = new Properties()
+localProps.load(rootProject.file("local.properties").newDataInputStream())
+
+android {
+    namespace 'com.example.jp'
+    compileSdk {
+        version = release(36) {
+            minorApiLevel = 1
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.example.jp"
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Injeta segredos via BuildConfig (não versionar local.properties)
+        buildConfigField "String", "N8N_BASE_URL", "\"${localProps['N8N_BASE_URL']}\""
+        buildConfigField "String", "N8N_API_KEY",  "\"${localProps['N8N_API_KEY']}\""
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable false
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose    = true
+        buildConfig = true
+    }
+}
+
+dependencies {
+    // Material Components (necessário para themes.xml — Theme.Material3.DayNight.NoActionBar)
+    implementation libs.material
+    implementation libs.appcompat
+
+    // Compose BOM — gerencia versões de todas as libs Compose
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.ui.graphics
+    implementation libs.compose.ui.tooling.preview
+    implementation libs.compose.material3
+    implementation libs.compose.icons.extended
+    implementation libs.activity.compose
+    debugImplementation libs.compose.ui.tooling
+
+    // Lifecycle
+    implementation libs.lifecycle.runtime.ktx
+    implementation libs.lifecycle.viewmodel.compose
+
+    // Navigation
+    implementation libs.navigation.compose
+
+    // Room
+    implementation libs.room.runtime
+    implementation libs.room.ktx
+    ksp libs.room.compiler
+
+    // Retrofit + Moshi
+    implementation libs.retrofit
+    implementation libs.retrofit.moshi
+    implementation libs.moshi.kotlin
+    ksp libs.moshi.kotlin.codegen
+
+    // Hilt (injeção de dependência)
+    implementation libs.hilt.android
+    ksp libs.hilt.android.compiler
+    implementation libs.hilt.navigation.compose
+
+    // WorkManager (sync em background — Fase 5)
+    implementation libs.work.runtime.ktx
+
+    // Testes
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+}
