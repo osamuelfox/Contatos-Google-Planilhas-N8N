@@ -58,7 +58,8 @@ class BuscaViewModel @Inject constructor(
     private val _erro = MutableStateFlow<String?>(null)
     val erro = _erro.asStateFlow()
 
-    val ultimaSync: String get() = repository.ultimaSyncFormatada()
+    private val _ultimaSync = MutableStateFlow(repository.ultimaSyncFormatada())
+    val ultimaSync = _ultimaSync.asStateFlow()
 
     // ── Ações ────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,9 @@ class BuscaViewModel @Inject constructor(
         viewModelScope.launch {
             _sincronizando.value = true
             repository.sincronizar(force)
+                .onSuccess {
+                    _ultimaSync.value = repository.ultimaSyncFormatada()
+                }
                 .onFailure { e ->
                     _erro.value = when (e) {
                         is IOException ->

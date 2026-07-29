@@ -39,6 +39,7 @@ fun BuscaScreen(
     val totalContatos by viewModel.totalContatos.collectAsState()
     val sincronizando by viewModel.sincronizando.collectAsState()
     val erro by viewModel.erro.collectAsState()
+    val ultimaSync by viewModel.ultimaSync.collectAsState()
 
     var termoBusca by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +71,7 @@ fun BuscaScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = viewModel.ultimaSync,
+                            text = ultimaSync,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -216,18 +217,25 @@ private fun ContatoItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar com inicial do nome
+            // Avatar com inicial do nome (ou '?' para contatos sem nome)
+            val semNome = contato.nome.isBlank()
             Surface(
                 modifier = Modifier.size(44.dp),
                 shape = RoundedCornerShape(22.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
+                color = if (semNome)
+                    MaterialTheme.colorScheme.secondaryContainer
+                else
+                    MaterialTheme.colorScheme.primaryContainer
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = contato.nome.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = if (semNome)
+                            MaterialTheme.colorScheme.onSecondaryContainer
+                        else
+                            MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -236,9 +244,18 @@ private fun ContatoItem(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = contato.nome,
-                    style = MaterialTheme.typography.bodyLarge,
+                    text = if (semNome) "(Sem nome)" else contato.nome,
+                    style = if (semNome)
+                        MaterialTheme.typography.bodyLarge.copy(
+                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                        )
+                    else
+                        MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
+                    color = if (semNome)
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    else
+                        MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
