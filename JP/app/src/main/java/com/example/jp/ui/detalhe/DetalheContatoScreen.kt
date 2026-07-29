@@ -65,12 +65,16 @@ fun DetalheContatoScreen(
         },
         bottomBar = {
             contato?.let { c ->
-                Surface(shadowElevation = 8.dp) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shadowElevation = 8.dp
+                ) {
                     Button(
                         onClick = { salvarNaAgenda(context, c) },
                         enabled = c.telefone.isNotBlank(),
                         modifier = Modifier
                             .fillMaxWidth()
+                            .navigationBarsPadding()
                             .padding(16.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -183,7 +187,7 @@ private fun salvarNaAgenda(context: Context, contato: ContatoEntity) {
     val notas = listOfNotNull(
         contato.cidade.takeIf     { it.isNotBlank() }?.let { "Cidade: $it" },
         contato.regiao.takeIf     { it.isNotBlank() }?.let { "Região: $it" },
-        contato.observacao.takeIf { it.isNotBlank() }
+        contato.observacao.takeIf { it.isNotBlank() }?.let { "Observação: $it" }
     ).joinToString("\n")
 
     val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
