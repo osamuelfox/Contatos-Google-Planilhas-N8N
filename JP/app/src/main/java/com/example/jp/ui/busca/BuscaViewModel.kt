@@ -32,9 +32,10 @@ class BuscaViewModel @Inject constructor(
     private val repository: ContatoRepository
 ) : ViewModel() {
 
-    private val termoBusca = MutableStateFlow("")
+    private val _termoBusca = MutableStateFlow("")
+    val termoBusca = _termoBusca.asStateFlow()
 
-    val contatos = termoBusca
+    val contatos = _termoBusca
         .debounce(200)
         .flatMapLatest { repository.buscar(it) }
         .stateIn(
@@ -64,7 +65,7 @@ class BuscaViewModel @Inject constructor(
     // ── Ações ────────────────────────────────────────────────────────────────
 
     fun onTermoMudou(novoTermo: String) {
-        termoBusca.value = novoTermo
+        _termoBusca.value = novoTermo
     }
 
     /** Chamado em LaunchedEffect(Unit) quando a tela abre. */

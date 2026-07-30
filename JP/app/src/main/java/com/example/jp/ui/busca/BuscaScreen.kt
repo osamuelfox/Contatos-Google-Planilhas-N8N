@@ -41,7 +41,7 @@ fun BuscaScreen(
     val erro by viewModel.erro.collectAsState()
     val ultimaSync by viewModel.ultimaSync.collectAsState()
 
-    var termoBusca by remember { mutableStateOf("") }
+    val termoBusca by viewModel.termoBusca.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Sync automática na abertura da tela
@@ -112,7 +112,6 @@ fun BuscaScreen(
             OutlinedTextField(
                 value = termoBusca,
                 onValueChange = { novo ->
-                    termoBusca = novo
                     viewModel.onTermoMudou(novo)
                 },
                 modifier = Modifier
@@ -125,7 +124,6 @@ fun BuscaScreen(
                 trailingIcon = {
                     if (termoBusca.isNotEmpty()) {
                         IconButton(onClick = {
-                            termoBusca = ""
                             viewModel.onTermoMudou("")
                         }) {
                             Icon(Icons.Default.Clear, contentDescription = "Limpar busca")
