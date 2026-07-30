@@ -66,7 +66,7 @@ fun BuscaScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Lideranças",
+                            text = "Meta de Votos",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
