@@ -18,5 +18,6 @@ data class ContatoEntity(
     val origem: String,
     val parceria: String,
     val statusVisita: String,
-    val demandas: String
+    val demandas: String,
+    val buscaNormalizada: String
 )

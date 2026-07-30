@@ -53,7 +53,9 @@ object AppModule {
         context,
         AppDatabase::class.java,
         "jp_database"
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton

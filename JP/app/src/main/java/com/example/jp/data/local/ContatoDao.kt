@@ -20,12 +20,10 @@ interface ContatoDao {
      */
     @Query("""
         SELECT * FROM contatos
-        WHERE nome        LIKE '%' || :termo || '%'
-           OR cidade      LIKE '%' || :termo || '%'
-           OR regiao      LIKE '%' || :termo || '%'
+        WHERE buscaNormalizada LIKE '%' || :termoNormalizado || '%'
         ORDER BY nome COLLATE NOCASE
     """)
-    fun buscar(termo: String): Flow<List<ContatoEntity>>
+    fun buscar(termoNormalizado: String): Flow<List<ContatoEntity>>
 
     /** Retorna todos os contatos ordenados por nome (campo de busca vazio). */
     @Query("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")

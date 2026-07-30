@@ -6,6 +6,7 @@ import com.example.jp.data.local.ContatoEntity
 import com.example.jp.data.remote.ContatosApi
 import com.example.jp.sync.SyncPrefs
 import kotlinx.coroutines.flow.Flow
+import java.text.Normalizer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +30,7 @@ class ContatoRepository @Inject constructor(
     // ── Busca local ──────────────────────────────────────────────────────────
 
     fun buscar(termo: String): Flow<List<ContatoEntity>> =
-        if (termo.isBlank()) dao.listarTodos() else dao.buscar(termo)
+        if (termo.isBlank()) dao.listarTodos() else dao.buscar(termo.removerAcentos())
 
     suspend fun buscarPorId(id: String): ContatoEntity? =
         dao.buscarPorId(id)
@@ -60,7 +61,8 @@ class ContatoRepository @Inject constructor(
                     origem      = dto.origem,
                     parceria    = dto.parceria,
                     statusVisita = dto.statusVisita,
-                    demandas    = dto.demandas
+                    demandas    = dto.demandas,
+                    buscaNormalizada = "${dto.nome} ${dto.cidade} ${dto.regiao}".removerAcentos()
                 )
             }
             dao.limpar()
@@ -74,4 +76,10 @@ class ContatoRepository @Inject constructor(
 
     /** Texto formatado da última sincronização (para exibição na TopBar). */
     fun ultimaSyncFormatada(): String = prefs.ultimaSyncFormatada()
+}
+
+/** Remove acentos e converte para minúsculas para permitir busca inteligente. */
+fun String.removerAcentos(): String {
+    val normalizado = Normalizer.normalize(this, Normalizer.Form.NFD)
+    return "\\p{InCombiningDiacriticalMarks}+".toRegex().replace(normalizado, "").lowercase()
 }
