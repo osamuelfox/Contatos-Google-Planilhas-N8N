@@ -61,7 +61,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return items\n  .filter(item => item.json['Liderança'])\n  .map(item => {\n    const l = item.json;\n    return {\n      json: {\n        id: `${l['Cidade'] ?? ''}-${l['Liderança']}`.trim(),\n        nome:         l['Liderança'],\n        telefone:     (l['Telefone'] ?? '').toString(),\n        regiao:       l['Regiões']      ?? '',\n        cidade:       l['Cidade']       ?? '',\n        observacao:   l['Observacao']   ?? l['Observação'] ?? '',\n        origem:       l['Origem']       ?? '',\n        parceria:     l['Parceria']     ?? '',\n        statusVisita: l['Status Visita']?? '',\n        demandas:     l['Demandas']     ?? ''\n      }\n    };\n  });\n\n"
+        "jsCode": "return items\n  .map((item, index) => {\n    const l = item.json;\n    const nome   = (l['Liderança'] ?? '').toString();\n    const cidade = (l['Cidade']    ?? '').toString();\n    return {\n      json: {\n        id:           (index + 2).toString(),\n        nome:         nome,\n        telefone:     (l['Telefone']  ?? '').toString(),\n        regiao:       l['Regiões']    ?? l['Região']  ?? l['Regioes'] ?? l['Regiao'] ?? '',\n        cidade:       cidade,\n        observacao:   (l['Observacao'] ?? l['Observação'] ?? '').toString(),\n        origem:       (l['Origem']    ?? '').toString(),\n        parceria:     (l['Parceria']  ?? '').toString(),\n        statusVisita: (l['Status Visita'] ?? '').toString(),\n        demandas:     (l['Demandas']  ?? '').toString()\n      }\n    };\n  });\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -74,6 +74,8 @@
     },
     {
       "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -152,7 +154,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "b848bfa7-a556-43cb-8d15-f5b49bb9f769",
+  "versionId": "788ff1e1-8b26-4192-b9e7-fdab2af5e539",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "107b159dd15fa08f031364bf3945f3111b0682ec6a463b62a62f521f0190aabb"
