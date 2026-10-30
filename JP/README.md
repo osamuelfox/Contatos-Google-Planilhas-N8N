@@ -1,4 +1,4 @@
-# JP Contatos (Meta de Votos)
+# JP Contatos (Google Planilhas)
 
 Um aplicativo Android moderno desenvolvido para gerenciamento e busca rápida de contatos e lideranças. Os dados são mantidos e administrados em uma planilha do Google Sheets e sincronizados com o aplicativo através de um webhook no **n8n**.
 
